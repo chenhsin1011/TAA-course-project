@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>瞎掰王</title>
+<style>
+/* ─── 嵌入式題庫（日後可直接在此修改）─── */
+/* EMBEDDED_QUESTIONS 宣告在下方 <script> 內 */
+
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0d0d1a;--sur:#1a1a2e;--sur2:#16213e;--bdr:#2d2d5e;
+  --txt:#e8e8f4;--dim:#7878a8;
+  --org:#f97316;--org2:#c2410c;
+  --blu:#3b82f6;--blu2:#1d4ed8;
+  --red:#ef4444;--red2:#b91c1c;
+  --grn:#22c55e;--gld:#fbbf24;
+  --r:12px;
+}
+body{background:var(--bg);color:var(--txt);font-family:'Noto Sans TC','Microsoft JhengHei',sans-serif;
+  min-height:100vh;max-width:620px;margin:0 auto;padding:14px 14px 80px}
+
+/* ─── 通用 ─── */
+h1{font-size:2rem;text-align:center}
+h2{font-size:1.35rem}
+h3{font-size:1.05rem}
+.btn{display:inline-block;padding:11px 22px;border:none;border-radius:8px;font-size:1rem;
+  font-weight:bold;cursor:pointer;transition:all .15s;font-family:inherit;line-height:1.3}
+.btn:active{transform:scale(.95)}
+.btn-org{background:var(--org);color:#fff}.btn-org:hover{background:var(--org2)}
+.btn-blu{background:var(--blu);color:#fff}.btn-blu:hover{background:var(--blu2)}
+.btn-red{background:var(--red);color:#fff}.btn-red:hover{background:var(--red2)}
+.btn-grn{background:var(--grn);color:#111}
+.btn-sec{background:var(--sur2);color:var(--txt);border:1px solid var(--bdr)}
+.btn-full{width:100%;text-align:center;display:block}
+.btn-sm{padding:5px 12px;font-size:.85rem}
+.btn:disabled{opacity:.45;cursor:default;transform:none}
+.card{background:var(--sur);border:1px solid var(--bdr);border-radius:var(--r);padding:16px;margin-bottom:12px}
+.hint{color:var(--dim);font-size:.82rem;margin-top:4px}
+.tc{text-align:center}.mt8{margin-top:8px}.mt12{margin-top:12px}.mt16{margin-top:16px}
+.mt20{margin-top:20px}.mb8{margin-bottom:8px}.mb12{margin-bottom:12px}
+.dim{color:var(--dim)}.gld{color:var(--gld)}.grn{color:var(--grn)}.red{color:var(--red)}
+.org{color:var(--org)}.blu{color:var(--blu)}.bold{font-weight:bold}
+.hidden{display:none!important}
+hr.div{border:none;border-top:1px solid var(--bdr);margin:12px 0}
+
+/* ─── 導覽 ─── */
+#nav{display:flex;gap:8px;margin-bottom:18px;border-bottom:1px solid var(--bdr);padding-bottom:12px}
+#nav button{padding:8px 18px;border:none;border-radius:6px;cursor:pointer;font-size:.92rem;
+  font-family:inherit;background:transparent;color:var(--dim);transition:all .2s}
+#nav button.active{background:var(--sur);color:var(--txt);border:1px solid var(--bdr)}
+
+/* ─── 計分板 ─── */
+#scoreboard{background:var(--sur);border:1px solid var(--bdr);border-radius:var(--r);margin-bottom:18px;overflow:hidden}
+#sb-hdr{display:flex;justify-content:space-between;align-items:center;padding:10px 16px;
+  cursor:pointer;user-select:none}
+#sb-hdr:hover{background:var(--sur2)}
+#sb-body{padding:0 16px 12px}
+.sr{display:flex;justify-content:space-between;align-items:center;padding:6px 0;
+  border-bottom:1px solid var(--bdr);font-size:.93rem}
+.sr:last-child{border-bottom:none}
+.sv{font-size:1.1rem;font-weight:bold;color:var(--gld)}
+.sr-role{font-size:.75rem;padding:1px 7px;border-radius:10px;margin-left:6px}
+.sr-thinker{background:rgba(249,115,22,.25);color:var(--org)}
+.sr-honest{background:rgba(59,130,246,.25);color:var(--blu)}
+.sr-bluffer{background:rgba(239,68,68,.25);color:var(--red)}
+
+/* ─── 畫面切換 ─── */
+.screen{display:none}.screen.active{display:block}
+
+/* ─── 設定 ─── */
+.pir{display:flex;gap:8px;align-items:center;margin-bottom:8px}
+.pir input{flex:1;padding:10px;background:var(--sur2);border:1px solid var(--bdr);
+  border-radius:8px;color:var(--txt);font-size:1rem;font-family:inherit}
+.pir input::placeholder{color:var(--dim)}
+.pir .rm{padding:8px 12px;background:var(--red);color:#fff;border:none;border-radius:6px;
+  cursor:pointer;font-size:1rem;line-height:1}
+.set-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap}
+.set-row label{color:var(--dim);white-space:nowrap}
+.set-row input[type=number]{width:72px;padding:7px;background:var(--sur2);border:1px solid var(--bdr);
+  border-radius:6px;color:var(--txt);font-size:1rem;font-family:inherit}
+.set-row input[type=checkbox]{width:17px;height:17px;cursor:pointer;accent-color:var(--org)}
+
+/* ─── 身分牌 ─── */
+.rc{border-radius:var(--r);padding:22px;text-align:center;margin:14px 0;transition:all .3s}
+.rc.thinker{background:linear-gradient(135deg,#7c2d12,#c2410c);border:2px solid var(--org)}
+.rc.honest{background:linear-gradient(135deg,#1e3a5f,#1d4ed8);border:2px solid var(--blu)}
+.rc.bluffer{background:linear-gradient(135deg,#7f1d1d,#b91c1c);border:2px solid var(--red)}
+.rc.cover{background:var(--sur2);border:2px solid var(--bdr);padding:38px;cursor:pointer}
+.rc.cover:hover{border-color:var(--org)}
+.rc-role{font-size:1.9rem;font-weight:bold;margin-bottom:8px}
+.rc-term{font-size:1.35rem;font-weight:bold;margin:10px 0;color:var(--gld)}
+.rc-def{font-size:.95rem;line-height:1.65;margin:8px 0;color:#ddd}
+.cd-wrap{background:rgba(255,255,255,.12);border-radius:4px;height:8px;margin:12px 0;overflow:hidden}
+.cd-bar{height:100%;background:var(--blu);border-radius:4px;transition:width 1s linear}
+.cd-num{font-size:2rem;font-weight:bold;color:var(--gld)}
+
+/* ─── 丟卡 ─── */
+.pt-row{display:flex;justify-content:space-between;align-items:center;padding:11px 15px;
+  background:var(--sur);border:1px solid var(--bdr);border-radius:10px;margin-bottom:8px;transition:all .2s}
+.pt-row.thrown{opacity:.5;background:var(--sur2)}
+.tb{padding:6px 14px;background:var(--org);color:#fff;border:none;border-radius:6px;
+  cursor:pointer;font-weight:bold;font-family:inherit;transition:all .12s;font-size:.9rem}
+.tb:active:not(:disabled){animation:fly .4s ease-out forwards}
+.tb:disabled{background:var(--dim);cursor:default}
+@keyframes fly{
+  0%{transform:scale(1) rotate(0) translateX(0);opacity:1}
+  40%{transform:scale(1.25) rotate(12deg) translateX(50px);opacity:1}
+  100%{transform:scale(.3) rotate(35deg) translateX(180px);opacity:0}
+}
+.cc{display:inline-flex;align-items:center;gap:6px;padding:5px 13px;background:var(--sur2);
+  border:1px solid var(--bdr);border-radius:20px;font-size:.88rem}
+.cc .cn{font-size:1.15rem;font-weight:bold;color:var(--gld)}
+
+/* ─── 指控 ─── */
+.ac-p{padding:13px;background:var(--sur);border:2px solid var(--bdr);border-radius:10px;
+  cursor:pointer;text-align:center;font-size:1.1rem;margin-bottom:8px;transition:all .2s}
+.ac-p:hover{border-color:var(--org)}
+.ac-p.sel{border-color:var(--org);background:rgba(249,115,22,.12)}
+
+/* ─── 揭曉 ─── */
+.rv-p{display:flex;align-items:center;gap:11px;padding:11px;border-radius:10px;margin-bottom:8px}
+.rv-p.thinker{background:rgba(249,115,22,.12);border:1px solid var(--org)}
+.rv-p.honest{background:rgba(59,130,246,.12);border:1px solid var(--blu)}
+.rv-p.bluffer{background:rgba(239,68,68,.12);border:1px solid var(--red)}
+.rv-badge{padding:3px 9px;border-radius:20px;font-size:.78rem;font-weight:bold;white-space:nowrap}
+.rv-p.thinker .rv-badge{background:var(--org);color:#fff}
+.rv-p.honest .rv-badge{background:var(--blu);color:#fff}
+.rv-p.bluffer .rv-badge{background:var(--red);color:#fff}
+
+/* ─── 通知條 ─── */
+.notif{padding:10px 15px;border-radius:8px;margin-bottom:8px;font-size:.9rem;line-height:1.5}
+.n-ok{background:rgba(34,197,94,.12);border:1px solid var(--grn);color:var(--grn)}
+.n-warn{background:rgba(251,191,36,.12);border:1px solid var(--gld);color:var(--gld)}
+.n-err{background:rgba(239,68,68,.12);border:1px solid var(--red);color:var(--red)}
+
+/* ─── 題庫管理 ─── */
+.q-row{background:var(--sur);border:1px solid var(--bdr);border-radius:10px;
+  padding:12px;margin-bottom:8px}
+.q-row:hover{border-color:var(--dim)}
+.diff-b{display:inline-block;padding:2px 7px;border-radius:10px;font-size:.75rem;font-weight:bold}
+.d1{background:rgba(34,197,94,.18);color:var(--grn)}
+.d2{background:rgba(251,191,36,.18);color:var(--gld)}
+.d3{background:rgba(239,68,68,.18);color:var(--red)}
+.af{display:grid;gap:9px}
+.af input,.af select,.af textarea{padding:9px;background:var(--sur2);border:1px solid var(--bdr);
+  border-radius:8px;color:var(--txt);font-family:inherit;font-size:.95rem}
+.af textarea{min-height:70px;resize:vertical}
+.af select option{background:var(--sur2)}
+
+/* ─── 排行榜 ─── */
+.lb-row{display:flex;align-items:center;gap:12px;padding:12px 16px;
+  background:var(--sur);border-radius:10px;margin-bottom:8px;font-size:1.05rem}
+.lb-rank{font-size:1.5rem;width:32px;text-align:center}
+
+/* ─── 記錄條 ─── */
+.log-i{font-size:.82rem;padding:4px 0;border-bottom:1px solid var(--bdr);color:var(--dim)}
+.log-i:last-child{border-bottom:none}
+</style>
+</head>
+<body>
+
+<!-- 導覽 -->
+<div id="nav">
+  <button id="nav-game" class="active" onclick="switchTab('game')">🎮 遊戲</button>
+  <button id="nav-q" onclick="switchTab('q')">📚 題庫管理</button>
+</div>
+
+<!-- ══════════════ 遊戲區 ══════════════ -->
+<div id="tab-game">
+
+  <!-- 計分板 -->
+  <div id="scoreboard" class="hidden">
+    <div id="sb-hdr" onclick="toggleSB()">
+      <span>📊 計分板</span><span id="sb-tog">▼</span>
+    </div>
+    <div id="sb-body"><div id="sb-list"></div></div>
+  </div>
+
+  <!-- 畫面：設定 -->
+  <div id="s-setup" class="screen active">
+    <h1 class="mb12">🃏 瞎掰王</h1>
+    <p class="dim tc mb12" style="font-size:.88rem">仿 9Upper 規則的中文猜詞桌遊</p>
+
+    <div class="card">
+      <h2 class="mb12">玩家設定</h2>
+      <p class="hint mb12">3～9 位玩家，空白名稱將使用預設名</p>
+      <div id="p-inputs"></div>
+      <button class="btn btn-sec btn-full mt12" id="add-p-btn" onclick="addPInput()">＋ 新增玩家</button>
+    </div>
+
+    <div class="card">
+      <h2 class="mb12">終局條件</h2>
+      <div class="set-row">
+        <input type="checkbox" id="ck-score" checked>
+        <label for="ck-score">有玩家達到</label>
+        <input type="number" id="t-score" value="15" min="5" max="99">
+        <label for="t-score">分時結束</label>
+      </div>
+      <div class="set-row">
+        <input type="checkbox" id="ck-rounds">
+        <label for="ck-rounds">打完</label>
+        <input type="number" id="t-rounds" value="6" min="1" max="30">
+        <label for="t-rounds">輪後結束</label>
+      </div>
+      <p class="hint">至少勾選一項；兩項皆勾則任一條件達成即結束</p>
+    </div>
+
+    <button class="btn btn-org btn-full mt16" onclick="startGame()">開始遊戲 →</button>
+  </div>
+
+  <!-- 畫面：回合開始 / 公告 -->
+  <div id="s-announce" class="screen">
+    <div class="tc mb12">
+      <span class="dim" id="a-round-lbl" style="font-size:.9rem"></span>
+      <h2 class="mt8 org" id="a-thinker"></h2>
+    </div>
+    <div class="card tc">
+      <p class="dim mb8" style="font-size:.82rem">本輪詞彙（所有人可見）</p>
+      <p class="gld bold" id="a-term" style="font-size:1.6rem"></p>
+      <p class="dim mt8" style="font-size:.82rem">
+        難度：<span id="a-diff"></span> ｜ 分類：<span id="a-cat"></span>
+      </p>
+    </div>
+    <p class="dim tc mb12" style="font-size:.85rem">所有人看到詞彙後，依序私下查看身分牌</p>
+    <button class="btn btn-org btn-full" onclick="goRoleReveal()">分配身分牌 →</button>
+  </div>
+
+  <!-- 畫面：查看身分牌 -->
+  <div id="s-roles" class="screen">
+    <div class="tc mb16">
+      <p class="dim" id="rv-prog" style="font-size:.88rem"></p>
+      <h2 class="mt8" id="rv-pname"></h2>
+    </div>
+
+    <!-- 遮住狀態 -->
+    <div id="rv-cover" class="rc cover tc" onclick="revealCard()">
+      <p style="font-size:1.1rem;color:var(--dim)">點此查看身分牌</p>
+      <p class="hint mt8">請確保其他人背對螢幕</p>
+    </div>
+
+    <!-- 顯示狀態 -->
+    <div id="rv-show" class="hidden">
+      <div id="rc-card" class="rc">
+        <div class="rc-role" id="rc-role"></div>
+        <div class="rc-term" id="rc-term"></div>
+        <div id="rc-def-sec">
+          <hr class="div">
+          <div class="rc-def" id="rc-def"></div>
+        </div>
+        <div id="rc-cd" class="hidden mt12">
+          <div class="cd-wrap"><div class="cd-bar" id="cd-bar" style="width:100%"></div></div>
+          <div class="cd-num" id="cd-num">9</div>
+          <p class="dim" style="font-size:.78rem">秒後自動遮住</p>
+        </div>
+        <div id="rc-bluff-note" class="hidden mt12"
+          style="color:rgba(255,255,255,.75);font-size:.9rem">
+          ⚠️ 你只知道詞彙，請自行編造解釋！
+        </div>
+        <div id="rc-thinker-note" class="hidden mt12"
+          style="color:rgba(255,255,255,.75);font-size:.88rem">
+          🎤 你是想想！已知完整解釋，主持發言討論。
+        </div>
+      </div>
+      <button class="btn btn-sec btn-full mt12" id="rv-hide-btn" onclick="hideCard()">
+        遮住並傳給下一位 →
+      </button>
+    </div>
+  </div>
+
+  <!-- 畫面：發言 & 丟卡 -->
+  <div id="s-speak" class="screen">
+    <h2 class="mb12">發言 &amp; 丟卡階段</h2>
+
+    <div class="card">
+      <p class="dim mb4" style="font-size:.82rem">本輪詞彙</p>
+      <p class="gld bold" id="sp-term" style="font-size:1.35rem"></p>
+      <p class="dim mt8" style="font-size:.82rem">
+        🎤 想想：<span class="org bold" id="sp-thinker"></span>
+      </p>
+    </div>
+
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <h3>公三小卡</h3>
+        <div class="cc">剩餘：<span class="cn" id="cards-left">0</span> 張</div>
+      </div>
+      <p class="hint mb12">
+        丟中瞎掰人：想想 +1，對方 −1<br>
+        丟中老實人：想想 −3（謹慎使用！）
+      </p>
+      <div id="throw-list"></div>
+    </div>
+
+    <div id="throw-log-card" class="card hidden">
+      <h3 class="mb8">丟卡記錄</h3>
+      <div id="throw-log"></div>
+    </div>
+
+    <button class="btn btn-org btn-full mt12" onclick="goAccuse()">完成發言，進入指控 →</button>
+  </div>
+
+  <!-- 畫面：指控 -->
+  <div id="s-accuse" class="screen">
+    <div class="card">
+      <p class="dim mb4" style="font-size:.82rem">詞彙</p>
+      <p class="gld bold" id="ac-term" style="font-size:1.2rem"></p>
+    </div>
+    <h2 class="mb8">
+      <span class="org" id="ac-thinker"></span>，你認為誰是老實人？
+    </h2>
+    <p class="hint mb16">老實人知道真正的解釋；猜對得題目分，猜錯瞎掰人各得題目分</p>
+    <div id="ac-list"></div>
+    <button class="btn btn-red btn-full mt16" id="ac-confirm" onclick="doReveal()" disabled>
+      確認指控 →
+    </button>
+  </div>
+
+  <!-- 畫面：揭曉 -->
+  <div id="s-reveal" class="screen">
+    <h2 class="mb12">🃏 揭曉！</h2>
+    <div class="card">
+      <p class="dim mb4" style="font-size:.82rem">本輪詞彙</p>
+      <p class="gld bold mb8" id="rv-term" style="font-size:1.2rem"></p>
+      <p class="dim mb4" style="font-size:.82rem">正確解釋</p>
+      <p id="rv-def" style="line-height:1.65"></p>
+    </div>
+    <div id="rv-notif" class="notif mb12"></div>
+    <h3 class="mb8">所有玩家身分</h3>
+    <div id="rv-plist"></div>
+    <h3 class="mt16 mb8">本輪得分變化</h3>
+    <div id="rv-changes"></div>
+    <button class="btn btn-org btn-full mt16" id="rv-next" onclick="nextRound()">下一輪 →</button>
+    <button class="btn btn-sec btn-full mt8" id="rv-end" onclick="showEnd()">結束遊戲</button>
+  </div>
+
+  <!-- 畫面：遊戲結束 -->
+  <div id="s-end" class="screen">
+    <h1 class="mb16">🎉 遊戲結束！</h1>
+    <div id="end-lb"></div>
+    <button class="btn btn-org btn-full mt16" onclick="resetGame()">再來一局</button>
+  </div>
+
+</div><!-- /tab-game -->
+
+<!-- ══════════════ 題庫管理區 ══════════════ -->
+<div id="tab-q" class="hidden">
+  <h2 class="mb12">📚 題庫管理</h2>
+
+  <div class="card" style="background:rgba(251,191,36,.05);border-color:var(--gld)">
+    <p style="font-size:.83rem;color:var(--gld)">
+      ⚠️ 此處修改僅影響本次遊戲（記憶體）。重新整理頁面後會從 <code>questions.json</code> 重新載入。<br>
+      如需永久修改，請直接編輯同目錄下的 <code>questions.json</code>。
+    </p>
+  </div>
+
+  <!-- 新增 -->
+  <div class="card">
+    <h3 class="mb12">新增題目</h3>
+    <div class="af">
+      <input type="text" id="nw-term" placeholder="詞彙（必填）" maxlength="30">
+      <textarea id="nw-def" placeholder="正確解釋（必填）"></textarea>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px">
+        <select id="nw-diff">
+          <option value="1">難度 1（簡單）</option>
+          <option value="2" selected>難度 2（普通）</option>
+          <option value="3">難度 3（困難）</option>
+        </select>
+        <input type="text" id="nw-cat" placeholder="分類（如：心理）">
+      </div>
+      <button class="btn btn-grn btn-full" onclick="addQ()">＋ 新增</button>
+    </div>
+  </div>
+
+  <!-- 列表 -->
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <h3>題目列表</h3>
+      <span class="dim" id="q-cnt" style="font-size:.83rem"></span>
+    </div>
+    <div id="q-list"></div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════
+// 嵌入式題庫備用（questions.json 載入失敗時使用）
+// ══════════════════════════════════════════════
+const EMBEDDED = [
+  {id:1,term:"拖延症",definition:"明知應該完成某事卻習慣性地推遲行動的心理現象，常見於需要意志力的任務",difficulty:1,category:"心理"},
+  {id:2,term:"咖啡因",definition:"存在於咖啡、茶葉等植物中的天然興奮劑，能刺激中樞神經系統，減輕疲勞感",difficulty:1,category:"化學"},
+  {id:3,term:"月暈",definition:"月光透過含有冰晶的薄雲層折射而在月球周圍形成的光圈現象",difficulty:1,category:"自然"},
+  {id:4,term:"光合作用",definition:"植物利用陽光能量，將水和二氧化碳轉化為葡萄糖並釋放氧氣的生化過程",difficulty:1,category:"生物"},
+  {id:5,term:"費洛蒙",definition:"動物體內分泌的化學物質，能透過嗅覺影響同種其他個體的行為或生理狀態",difficulty:2,category:"生物"},
+  {id:6,term:"量子糾纏",definition:"兩個粒子的量子態相互關聯，測量其中一個會即時影響另一個的狀態，無論相距多遠",difficulty:3,category:"物理"},
+  {id:7,term:"帕金森定律",definition:"工作會自然膨脹以填滿完成它所分配的時間，效率與時間壓力成反比的現象",difficulty:3,category:"管理學"},
+  {id:8,term:"斯德哥爾摩症候群",definition:"人質或受害者對施暴者產生情感依附，甚至出現為其辯護的非理性行為的心理現象",difficulty:2,category:"心理"},
+  {id:9,term:"多普勒效應",definition:"波源與觀測者相對移動時，觀測到的波頻率與波源發出的頻率不同的物理現象",difficulty:2,category:"物理"},
+  {id:10,term:"奧卡姆剃刀",definition:"解決問題時應優先採用假設最少的方案，即「如無必要，勿增實體」的思維原則",difficulty:2,category:"哲學"},
+  {id:11,term:"安慰劑效應",definition:"患者因相信治療有效而產生實際生理或心理療效的現象，即使治療本身並無藥效",difficulty:2,category:"醫學"},
+  {id:12,term:"認知失調",definition:"同時持有兩種相互矛盾的信念，或信念與行為不一致時，產生的心理不適與緊張感",difficulty:2,category:"心理"},
+  {id:13,term:"破窗理論",definition:"環境中的不良現象若被放任而不處理，會誘使更多破壞行為出現，形成惡性循環",difficulty:2,category:"犯罪學"},
+  {id:14,term:"彼得原理",definition:"組織中能勝任的人會持續被晉升，直到升至無法勝任的職位為止，導致組織效率下降",difficulty:3,category:"管理學"},
+  {id:15,term:"馬太效應",definition:"富者愈富、貧者愈貧的社會現象，源自聖經語句「凡有的，還要加給他」",difficulty:2,category:"社會學"},
+];
+
+// ══════════════════════════════════════════════
+// 全域狀態
+// ══════════════════════════════════════════════
+let questions = [];
+let editQId   = null;
+let G         = {};
+let cdTimer   = null;
+let cdVal     = 9;
+let sbCollapsed = false;
+
+function resetG(){
+  G = {
+    players:[],      // [{name,score}]
+    tgtScore:null,
+    maxRounds:null,
+    roundNum:0,
+    thinkerIdx:0,
+    honestIdx:null,
+    roles:[],        // 'thinker' | 'honest' | 'bluffer'
+    question:null,
+    rvCursor:0,
+    cardsLeft:0,
+    thrown:[],       // [{targetIdx, isHonest}]
+    changes:[],      // score-change log objects
+    accusedIdx:null,
+  };
+}
+
+// ══════════════════════════════════════════════
+// 啟動
+// ══════════════════════════════════════════════
+window.addEventListener('DOMContentLoaded', async () => {
+  resetG();
+  try {
+    const r = await fetch('./questions.json');
+    if(!r.ok) throw 0;
+    const raw = await r.json();
+    // 支援純陣列 或 {questions:[...]} 格式
+    questions = Array.isArray(raw) ? raw
+              : (raw.questions && Array.isArray(raw.questions)) ? raw.questions
+              : EMBEDDED;
+  } catch(_){ questions = JSON.parse(JSON.stringify(EMBEDDED)); }
+  initPInputs();
+  renderQList();
+});
+
+// ══════════════════════════════════════════════
+// Tab 切換
+// ══════════════════════════════════════════════
+function switchTab(t){
+  document.getElementById('tab-game').classList.toggle('hidden', t!=='game');
+  document.getElementById('tab-q').classList.toggle('hidden', t!=='q');
+  document.getElementById('nav-game').classList.toggle('active', t==='game');
+  document.getElementById('nav-q').classList.toggle('active', t==='q');
+  if(t==='q') renderQList();
+}
+
+// ══════════════════════════════════════════════
+// 設定畫面
+// ══════════════════════════════════════════════
+function initPInputs(){
+  const c = document.getElementById('p-inputs');
+  c.innerHTML = '';
+  for(let i=0;i<4;i++) addPInput(true);
+}
+
+function addPInput(init){
+  const c  = document.getElementById('p-inputs');
+  const rs = c.querySelectorAll('.pir');
+  if(rs.length >= 9) return;
+  const n  = rs.length + 1;
+  const d  = document.createElement('div');
+  d.className = 'pir';
+  d.innerHTML = `<input type="text" placeholder="玩家 ${n}" maxlength="10">
+    <button class="rm" onclick="rmPInput(this)" title="移除">✕</button>`;
+  c.appendChild(d);
+  if(!init && c.querySelectorAll('.pir').length >= 9)
+    document.getElementById('add-p-btn').disabled = true;
+}
+
+function rmPInput(btn){
+  const c  = document.getElementById('p-inputs');
+  const rs = c.querySelectorAll('.pir');
+  if(rs.length <= 3){ alert('至少需要 3 位玩家'); return; }
+  btn.parentElement.remove();
+  document.getElementById('add-p-btn').disabled = false;
+  c.querySelectorAll('input').forEach((inp,i) => {
+    if(!inp.value) inp.placeholder = `玩家 ${i+1}`;
+  });
+}
+
+function startGame(){
+  const inputs = document.querySelectorAll('#p-inputs input');
+  const names  = [];
+  inputs.forEach((inp,i) => names.push(inp.value.trim() || `玩家 ${i+1}`));
+  if(names.length < 3){ alert('至少需要 3 位玩家！'); return; }
+
+  const ckS = document.getElementById('ck-score').checked;
+  const ckR = document.getElementById('ck-rounds').checked;
+  if(!ckS && !ckR){ alert('請至少勾選一項終局條件！'); return; }
+  if(questions.length === 0){ alert('題庫為空，請先在「題庫管理」新增題目！'); return; }
+
+  resetG();
+  G.players    = names.map(n => ({name:n, score:3}));
+  G.tgtScore   = ckS ? parseInt(document.getElementById('t-score').value)  : null;
+  G.maxRounds  = ckR ? parseInt(document.getElementById('t-rounds').value) : null;
+  G.thinkerIdx = 0;
+
+  document.getElementById('scoreboard').classList.remove('hidden');
+  renderSB();
+  newRound();
+}
+
+// ══════════════════════════════════════════════
+// 回合管理
+// ══════════════════════════════════════════════
+function newRound(){
+  G.roundNum++;
+  G.honestIdx  = null;
+  G.roles      = [];
+  G.thrown     = [];
+  G.changes    = [];
+  G.accusedIdx = null;
+
+  // 抽題
+  G.question = questions[Math.floor(Math.random()*questions.length)];
+
+  // 分配身分（對所有玩家洗牌後依序指派，確保完全隨機）
+  const n      = G.players.length;
+  const allIdx = Array.from({length: n}, (_, i) => i);
+  shuffle(allIdx);
+  G.thinkerIdx = allIdx[0];
+  G.honestIdx  = allIdx[1];
+  G.roles      = Array(n).fill('bluffer');
+  G.roles[G.thinkerIdx] = 'thinker';
+  G.roles[G.honestIdx]  = 'honest';
+  G.cardsLeft  = n - 2;
+
+  // 公告畫面
+  const q  = G.question;
+  const tn = G.players[G.thinkerIdx].name;
+  document.getElementById('a-round-lbl').textContent = `第 ${G.roundNum} 輪`;
+  document.getElementById('a-thinker').textContent   = `🎤 ${tn} 是本輪的想想！`;
+  document.getElementById('a-term').textContent      = q.term;
+  document.getElementById('a-diff').innerHTML        = diffBadge(q.difficulty);
+  document.getElementById('a-cat').textContent       = q.category || '一般';
+  showS('s-announce');
+}
+
+// ══════════════════════════════════════════════
+// 身分牌
+// ══════════════════════════════════════════════
+function goRoleReveal(){
+  G.rvCursor = 0;
+  showNextReveal();
+  showS('s-roles');
+}
+
+function showNextReveal(){
+  const p   = G.players[G.rvCursor];
+  const tot = G.players.length;
+  document.getElementById('rv-prog').textContent  = `${G.rvCursor+1} / ${tot}`;
+  document.getElementById('rv-pname').textContent = `請把手機傳給 ${p.name}`;
+  document.getElementById('rv-cover').classList.remove('hidden');
+  document.getElementById('rv-show').classList.add('hidden');
+}
+
+function revealCard(){
+  stopCD();
+  const role = G.roles[G.rvCursor];
+  const q    = G.question;
+  const card = document.getElementById('rc-card');
+  card.className = 'rc ' + role;
+
+  const el = id => document.getElementById(id);
+  el('rc-role').textContent = {thinker:'🎤 想想', honest:'📖 老實人', bluffer:'🃏 瞎掰人'}[role];
+  el('rc-term').textContent = q.term;
+  el('rc-def').textContent  = q.definition;
+  el('rc-cd').classList.add('hidden');
+  el('rc-bluff-note').classList.add('hidden');
+  el('rc-thinker-note').classList.add('hidden');
+  el('rc-def-sec').classList.remove('hidden');
+
+  if(role === 'thinker'){
+    el('rc-thinker-note').classList.remove('hidden');
+    el('rc-cd').classList.remove('hidden');
+    el('rv-hide-btn').textContent = '已瞭解，遮住並傳給下一位 →';
+    startCD(5, false);
+  } else if(role === 'honest'){
+    el('rc-cd').classList.remove('hidden');
+    el('rv-hide-btn').textContent = '已記住，遮住並傳給下一位 →';
+    startCD(9, true);
+  } else {
+    el('rc-def-sec').classList.add('hidden');
+    el('rc-bluff-note').classList.remove('hidden');
+    el('rc-cd').classList.remove('hidden');
+    el('rv-hide-btn').textContent = '已看好，遮住並傳給下一位 →';
+    startCD(5, false);
+  }
+
+  document.getElementById('rv-cover').classList.add('hidden');
+  document.getElementById('rv-show').classList.remove('hidden');
+}
+
+function startCD(secs, autoHide){
+  cdVal = secs;
+  const bar = document.getElementById('cd-bar');
+  const num = document.getElementById('cd-num');
+  const btn = document.getElementById('rv-hide-btn');
+  const lbl = document.querySelector('#rc-cd p');
+  btn.disabled = true;
+  if(lbl) lbl.textContent = autoHide ? '秒後自動遮住' : '秒後可蓋回去';
+  bar.style.transition = 'none';
+  bar.style.width = '100%';
+  num.textContent = String(secs);
+  setTimeout(()=>{
+    bar.style.transition = `width ${secs}s linear`;
+    bar.style.width = '0%';
+  }, 60);
+  cdTimer = setInterval(()=>{
+    cdVal--;
+    num.textContent = cdVal;
+    if(cdVal <= 0){
+      stopCD();
+      if(autoHide){ hideCard(); } else { btn.disabled = false; }
+    }
+  }, 1000);
+}
+
+function stopCD(){
+  if(cdTimer){ clearInterval(cdTimer); cdTimer = null; }
+}
+
+function hideCard(){
+  stopCD();
+  G.rvCursor++;
+  if(G.rvCursor >= G.players.length){
+    goSpeak();
+  } else {
+    showNextReveal();
+  }
+}
+
+// ══════════════════════════════════════════════
+// 發言 & 丟卡
+// ══════════════════════════════════════════════
+function goSpeak(){
+  const q  = G.question;
+  const tn = G.players[G.thinkerIdx].name;
+  document.getElementById('sp-term').textContent    = q.term;
+  document.getElementById('sp-thinker').textContent = tn;
+  document.getElementById('cards-left').textContent = G.cardsLeft;
+
+  const list = document.getElementById('throw-list');
+  list.innerHTML = '';
+  G.players.forEach((p,i)=>{
+    if(i === G.thinkerIdx) return;
+    const wasThrown = G.thrown.some(t=>t.targetIdx===i);
+    const row = document.createElement('div');
+    row.className = 'pt-row' + (wasThrown?' thrown':'');
+    row.id = `tr-${i}`;
+    row.innerHTML = `
+      <span>${esc(p.name)}</span>
+      <button class="tb" onclick="throwCard(${i})"
+        ${(wasThrown||G.cardsLeft<=0)?'disabled':''}>🃏 丟卡</button>`;
+    list.appendChild(row);
+  });
+
+  renderThrowLog();
+  showS('s-speak');
+}
+
+function throwCard(ti){
+  if(G.cardsLeft <= 0) return;
+  const tn = G.players[G.thinkerIdx].name;
+  const pn = G.players[ti].name;
+  if(!confirm(`確定要向「${pn}」丟出公三小卡嗎？`)) return;
+
+  const isHonest = G.roles[ti] === 'honest';
+  let tDelta=0, pDelta=0, logMsg='';
+
+  if(isHonest){
+    tDelta = -3;
+    logMsg = `${tn} → ${pn}（丟卡）｜想想 −3 分`;
+  } else {
+    tDelta = +1; pDelta = -1;
+    logMsg = `${tn} → ${pn}（丟卡）｜想想 +1，${pn} −1`;
+  }
+
+  G.players[G.thinkerIdx].score += tDelta;
+  G.players[ti].score           += pDelta;
+  G.cardsLeft--;
+  G.thrown.push({targetIdx:ti, isHonest});
+  G.changes.push({type:'card', tDelta, ti, pDelta, logMsg});
+
+  document.getElementById('cards-left').textContent = G.cardsLeft;
+  const row = document.getElementById(`tr-${ti}`);
+  if(row){ row.classList.add('thrown'); row.querySelector('.tb').disabled=true; }
+  if(G.cardsLeft <= 0)
+    document.querySelectorAll('.tb').forEach(b=>b.disabled=true);
+
+  renderThrowLog();
+  renderSB();
+}
+
+function renderThrowLog(){
+  const cards = G.changes.filter(c=>c.type==='card');
+  const sec   = document.getElementById('throw-log-card');
+  const log   = document.getElementById('throw-log');
+  if(!cards.length){ sec.classList.add('hidden'); return; }
+  sec.classList.remove('hidden');
+  log.innerHTML = cards.map(c=>`<div class="log-i">${esc(c.logMsg)}</div>`).join('');
+}
+
+// ══════════════════════════════════════════════
+// 指控
+// ══════════════════════════════════════════════
+function goAccuse(){
+  document.getElementById('ac-term').textContent    = G.question.term;
+  document.getElementById('ac-thinker').textContent = G.players[G.thinkerIdx].name;
+  const list = document.getElementById('ac-list');
+  list.innerHTML = '';
+  G.players.forEach((p,i)=>{
+    if(i===G.thinkerIdx) return;
+    const d = document.createElement('div');
+    d.className = 'ac-p';
+    d.id = `ac-${i}`;
+    d.textContent = p.name;
+    d.onclick = ()=> selectAccused(i);
+    list.appendChild(d);
+  });
+  G.accusedIdx = null;
+  document.getElementById('ac-confirm').disabled = true;
+  showS('s-accuse');
+}
+
+function selectAccused(i){
+  G.accusedIdx = i;
+  document.querySelectorAll('.ac-p').forEach(e=>e.classList.remove('sel'));
+  document.getElementById(`ac-${i}`).classList.add('sel');
+  document.getElementById('ac-confirm').disabled = false;
+}
+
+// ══════════════════════════════════════════════
+// 揭曉 & 結算
+// ══════════════════════════════════════════════
+function doReveal(){
+  const q       = G.question;
+  const accused = G.accusedIdx;
+  const correct = accused === G.honestIdx;
+
+  document.getElementById('rv-term').textContent = q.term;
+  document.getElementById('rv-def').textContent  = q.definition;
+
+  const notif = document.getElementById('rv-notif');
+  const tn    = G.players[G.thinkerIdx].name;
+  if(correct){
+    const pts = q.difficulty;
+    G.players[G.thinkerIdx].score += pts;
+    G.changes.push({type:'acc', result:'ok', pts, thinkerName:tn});
+    notif.className = 'notif n-ok';
+    notif.innerHTML = `✅ 猜對了！${esc(tn)} 獲得 ${pts} 分！`;
+  } else {
+    const pts = q.difficulty;
+    G.players.forEach((p,i)=>{ if(G.roles[i]==='bluffer') p.score+=pts; });
+    G.changes.push({type:'acc', result:'fail', pts});
+    notif.className = 'notif n-err';
+    notif.innerHTML = `❌ 猜錯了！所有瞎掰人各得 ${pts} 分！`;
+  }
+
+  // 玩家列表
+  const plist = document.getElementById('rv-plist');
+  plist.innerHTML = '';
+  const roleLabel = {thinker:'想想', honest:'老實人', bluffer:'瞎掰人'};
+  G.players.forEach((p,i)=>{
+    const role = G.roles[i];
+    const d    = document.createElement('div');
+    d.className = `rv-p ${role}`;
+    const tag  = i===accused ? ' 👈 被指控' : (i===G.honestIdx&&!correct?' ← 老實人':'');
+    d.innerHTML = `
+      <span class="rv-badge">${roleLabel[role]}</span>
+      <span>${esc(p.name)}${tag}</span>
+      <span class="sv" style="margin-left:auto">${p.score} 分</span>`;
+    plist.appendChild(d);
+  });
+
+  // 得分變化
+  const chg = document.getElementById('rv-changes');
+  chg.innerHTML = '';
+  G.changes.forEach(c=>{
+    const d = document.createElement('div');
+    if(c.type==='card'){
+      d.className = 'log-i';
+      d.textContent = c.logMsg;
+    } else {
+      d.className = 'notif ' + (c.result==='ok'?'n-ok':'n-err');
+      d.style.marginBottom = '4px';
+      d.textContent = c.result==='ok'
+        ? `猜中老實人：${c.thinkerName} +${c.pts} 分`
+        : `猜錯老實人：所有瞎掰人各 +${c.pts} 分`;
+    }
+    chg.appendChild(d);
+  });
+
+  renderSB(true);  // show roles in scoreboard too
+
+  const end = checkEnd();
+  document.getElementById('rv-next').classList.toggle('hidden', end);
+  document.getElementById('rv-end').textContent = end ? '查看最終結果 →' : '提前結束遊戲';
+  showS('s-reveal');
+}
+
+function checkEnd(){
+  if(G.maxRounds!==null && G.roundNum>=G.maxRounds) return true;
+  if(G.tgtScore!==null && G.players.some(p=>p.score>=G.tgtScore)) return true;
+  return false;
+}
+
+function nextRound(){
+  if(checkEnd()){ showEnd(); return; }
+  renderSB();
+  newRound();
+}
+
+function showEnd(){
+  const sorted = [...G.players].sort((a,b)=>b.score-a.score);
+  const lb     = document.getElementById('end-lb');
+  lb.innerHTML = '';
+  const maxS   = sorted[0].score;
+  const winners= sorted.filter(p=>p.score===maxS).map(p=>p.name);
+
+  const hero = document.createElement('div');
+  hero.className = 'notif n-ok tc mb12';
+  hero.style.fontSize = '1.1rem';
+  hero.textContent = winners.length===1
+    ? `🏆 ${winners[0]} 獲勝！`
+    : `🏆 ${winners.join('、')} 並列第一！`;
+  lb.appendChild(hero);
+
+  sorted.forEach((p,i)=>{
+    const d = document.createElement('div');
+    d.className = 'lb-row';
+    d.innerHTML = `
+      <span class="lb-rank">${['🥇','🥈','🥉'][i]||(i+1)}</span>
+      <span style="flex:1">${esc(p.name)}</span>
+      <span class="sv">${p.score} 分</span>`;
+    lb.appendChild(d);
+  });
+  showS('s-end');
+}
+
+function resetGame(){
+  resetG();
+  document.getElementById('scoreboard').classList.add('hidden');
+  document.getElementById('sb-list').innerHTML = '';
+  showS('s-setup');
+}
+
+// ══════════════════════════════════════════════
+// 計分板
+// ══════════════════════════════════════════════
+function renderSB(showRoles){
+  const list = document.getElementById('sb-list');
+  const roleLabel = {thinker:'想想', honest:'老實人', bluffer:'瞎掰人'};
+  list.innerHTML = G.players.map((p,i)=>{
+    let roleTag = '';
+    if(showRoles && G.roles[i]){
+      const r = G.roles[i];
+      roleTag = `<span class="sr-role sr-${r}">${roleLabel[r]}</span>`;
+    }
+    return `<div class="sr"><span>${esc(p.name)}${roleTag}</span><span class="sv">${p.score}</span></div>`;
+  }).join('');
+}
+
+function toggleSB(){
+  sbCollapsed = !sbCollapsed;
+  document.getElementById('sb-body').style.display = sbCollapsed?'none':'block';
+  document.getElementById('sb-tog').textContent    = sbCollapsed?'▶':'▼';
+}
+
+// ══════════════════════════════════════════════
+// 畫面切換
+// ══════════════════════════════════════════════
+function showS(sid){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(sid).classList.add('active');
+}
+
+// ══════════════════════════════════════════════
+// 題庫管理
+// ══════════════════════════════════════════════
+function renderQList(){
+  const list = document.getElementById('q-list');
+  document.getElementById('q-cnt').textContent = `共 ${questions.length} 題`;
+  if(!questions.length){
+    list.innerHTML = '<p class="dim tc" style="padding:20px">尚無題目</p>';
+    return;
+  }
+  list.innerHTML = '';
+  questions.forEach(q=>{
+    const d = document.createElement('div');
+    d.className = 'q-row';
+    d.id = `qr-${q.id}`;
+    if(editQId === q.id){
+      d.innerHTML = `
+        <div class="af">
+          <input id="ed-t-${q.id}" value="${esc(q.term)}" placeholder="詞彙">
+          <textarea id="ed-d-${q.id}">${esc(q.definition)}</textarea>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+            <select id="ed-df-${q.id}">
+              <option value="1"${q.difficulty==1?' selected':''}>難度 1</option>
+              <option value="2"${q.difficulty==2?' selected':''}>難度 2</option>
+              <option value="3"${q.difficulty==3?' selected':''}>難度 3</option>
+            </select>
+            <input id="ed-c-${q.id}" value="${esc(q.category||'')}" placeholder="分類">
+          </div>
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-grn" style="flex:1" onclick="saveQ(${q.id})">儲存</button>
+            <button class="btn btn-sec" style="flex:1" onclick="cancelQ()">取消</button>
+          </div>
+        </div>`;
+    } else {
+      d.innerHTML = `
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">
+          <div style="flex:1;min-width:0">
+            <div style="font-weight:bold;margin-bottom:4px">
+              ${esc(q.term)}
+              <span class="diff-b d${q.difficulty}">難度${q.difficulty}</span>
+              ${q.category?`<span class="dim" style="font-size:.78rem"> ${esc(q.category)}</span>`:''}
+            </div>
+            <div class="dim" style="font-size:.82rem;line-height:1.55">${esc(q.definition)}</div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:5px;flex-shrink:0">
+            <button class="btn btn-sec btn-sm" onclick="editQ(${q.id})">編輯</button>
+            <button class="btn btn-red btn-sm" onclick="delQ(${q.id})">刪除</button>
+          </div>
+        </div>`;
+    }
+    list.appendChild(d);
+  });
+}
+
+function addQ(){
+  const term = document.getElementById('nw-term').value.trim();
+  const def  = document.getElementById('nw-def').value.trim();
+  const diff = parseInt(document.getElementById('nw-diff').value);
+  const cat  = document.getElementById('nw-cat').value.trim();
+  if(!term||!def){ alert('詞彙和解釋為必填！'); return; }
+  const maxId = questions.reduce((m,q)=>Math.max(m,q.id),0);
+  questions.push({id:maxId+1, term, definition:def, difficulty:diff, category:cat});
+  document.getElementById('nw-term').value = '';
+  document.getElementById('nw-def').value  = '';
+  document.getElementById('nw-cat').value  = '';
+  renderQList();
+}
+
+function editQ(id){ editQId=id; renderQList(); }
+function cancelQ(){ editQId=null; renderQList(); }
+
+function saveQ(id){
+  const q   = questions.find(q=>q.id===id);
+  if(!q) return;
+  const term = document.getElementById(`ed-t-${id}`).value.trim();
+  const def  = document.getElementById(`ed-d-${id}`).value.trim();
+  const diff = parseInt(document.getElementById(`ed-df-${id}`).value);
+  const cat  = document.getElementById(`ed-c-${id}`).value.trim();
+  if(!term||!def){ alert('詞彙和解釋為必填！'); return; }
+  Object.assign(q, {term, definition:def, difficulty:diff, category:cat});
+  editQId = null;
+  renderQList();
+}
+
+function delQ(id){
+  if(!confirm('確定刪除這道題目嗎？')) return;
+  questions = questions.filter(q=>q.id!==id);
+  renderQList();
+}
+
+// ══════════════════════════════════════════════
+// 工具函式
+// ══════════════════════════════════════════════
+function shuffle(a){
+  for(let i=a.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+function esc(s){
+  return String(s)
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;');
+}
+
+function diffBadge(d){
+  const lbl={1:'簡單',2:'普通',3:'困難'};
+  return `<span class="diff-b d${d}">難度${d}（${lbl[d]}）</span>`;
+}
+
+function id(s){ return document.getElementById(s); }
+</script>
+</body>
+</html>
