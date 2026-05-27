@@ -294,11 +294,6 @@ hr.div{border:none;border-top:1px solid var(--bdr);margin:12px 0}
       <div id="throw-list"></div>
     </div>
 
-    <div id="throw-log-card" class="card hidden">
-      <h3 class="mb8">丟卡記錄</h3>
-      <div id="throw-log"></div>
-    </div>
-
     <button class="btn btn-org btn-full mt12" style="font-size:1.1rem;padding:14px" onclick="goAccuse()">進入票選 →</button>
   </div>
 
@@ -681,7 +676,6 @@ function goSpeak(){
     list.appendChild(row);
   });
 
-  renderThrowLog();
   showS('s-speak');
 }
 
@@ -745,17 +739,7 @@ function doThrow(ti){
   if(G.cardsLeft <= 0)
     document.querySelectorAll('.tb').forEach(b=>b.disabled=true);
 
-  renderThrowLog();
   renderSB();
-}
-
-function renderThrowLog(){
-  const cards = G.changes.filter(c=>c.type==='card');
-  const sec   = document.getElementById('throw-log-card');
-  const log   = document.getElementById('throw-log');
-  if(!cards.length){ sec.classList.add('hidden'); return; }
-  sec.classList.remove('hidden');
-  log.innerHTML = cards.map(c=>`<div class="log-i">${esc(c.logMsg)}</div>`).join('');
 }
 
 // ══════════════════════════════════════════════
