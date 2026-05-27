@@ -245,6 +245,7 @@ hr.div{border:none;border-top:1px solid var(--bdr);margin:12px 0}
       <div id="rc-card" class="rc">
         <div class="rc-role" id="rc-role"></div>
         <div class="rc-term" id="rc-term"></div>
+        <div id="rc-cat" style="color:rgba(255,255,255,.65);font-size:.85rem;margin-top:6px"></div>
         <div id="rc-def-sec">
           <hr class="div">
           <div class="rc-def" id="rc-def"></div>
@@ -260,7 +261,7 @@ hr.div{border:none;border-top:1px solid var(--bdr);margin:12px 0}
         </div>
         <div id="rc-thinker-note" class="hidden mt12"
           style="color:rgba(255,255,255,.75);font-size:.88rem">
-          🎤 你是想想！已知完整解釋，主持發言討論。
+          🎤 你是想想！請猜出誰是真正的老實人。
         </div>
       </div>
       <button class="btn btn-sec btn-full mt12" id="rv-hide-btn" onclick="hideCard()">
@@ -269,15 +270,15 @@ hr.div{border:none;border-top:1px solid var(--bdr);margin:12px 0}
     </div>
   </div>
 
-  <!-- 畫面：發言 & 丟卡 -->
+  <!-- 畫面：發言參考 & 丟卡 -->
   <div id="s-speak" class="screen">
-    <h2 class="mb12">發言 &amp; 丟卡階段</h2>
+    <h2 class="mb12 tc">💬 發言參考畫面</h2>
 
-    <div class="card">
-      <p class="dim mb4" style="font-size:.82rem">本輪詞彙</p>
-      <p class="gld bold" id="sp-term" style="font-size:1.35rem"></p>
-      <p class="dim mt8" style="font-size:.82rem">
-        🎤 想想：<span class="org bold" id="sp-thinker"></span>
+    <div class="card tc" style="border:2px solid var(--gld);background:rgba(251,191,36,.06)">
+      <p class="dim mb8" style="font-size:.82rem">本輪題目（所有人可見）</p>
+      <p class="gld bold" id="sp-term" style="font-size:2rem;line-height:1.3"></p>
+      <p class="dim mt8" style="font-size:.9rem">
+        分類：<span id="sp-cat" class="org bold"></span>
       </p>
     </div>
 
@@ -298,7 +299,7 @@ hr.div{border:none;border-top:1px solid var(--bdr);margin:12px 0}
       <div id="throw-log"></div>
     </div>
 
-    <button class="btn btn-org btn-full mt12" onclick="goAccuse()">完成發言，進入指控 →</button>
+    <button class="btn btn-org btn-full mt12" style="font-size:1.1rem;padding:14px" onclick="goAccuse()">進入票選 →</button>
   </div>
 
   <!-- 畫面：指控 -->
@@ -340,6 +341,29 @@ hr.div{border:none;border-top:1px solid var(--bdr);margin:12px 0}
     <h1 class="mb16">🎉 遊戲結束！</h1>
     <div id="end-lb"></div>
     <button class="btn btn-org btn-full mt16" onclick="resetGame()">再來一局</button>
+  </div>
+
+  <!-- 丟卡確認視窗（自訂 modal，取代原生 confirm）-->
+  <div id="throw-modal"
+    style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.72);
+           z-index:1000;align-items:center;justify-content:center;padding:16px">
+    <div style="background:var(--sur);border:1px solid var(--bdr);border-radius:var(--r);
+                padding:24px;max-width:340px;width:100%">
+      <h3 class="mb12">確認丟卡</h3>
+      <p class="mb12">確定要向
+        <strong id="tm-target" class="gld"></strong>
+        丟出公三小卡嗎？
+      </p>
+      <div style="background:var(--sur2);border-radius:8px;padding:12px;margin-bottom:18px;
+                  font-size:.88rem;line-height:1.8">
+        <div class="grn">✓ 命中瞎掰人：想想 +1 分，對方 −1 分</div>
+        <div class="red">⚠ 命中老實人：想想 −3 分</div>
+      </div>
+      <div style="display:flex;gap:10px">
+        <button class="btn btn-sec" style="flex:1" onclick="closeThrowModal()">取消</button>
+        <button class="btn btn-org" style="flex:1" onclick="confirmThrow()">確定丟出 🃏</button>
+      </div>
+    </div>
   </div>
 
 </div><!-- /tab-game -->
@@ -408,12 +432,13 @@ const EMBEDDED = [
 // ══════════════════════════════════════════════
 // 全域狀態
 // ══════════════════════════════════════════════
-let questions = [];
-let editQId   = null;
-let G         = {};
-let cdTimer   = null;
-let cdVal     = 9;
-let sbCollapsed = false;
+let questions        = [];
+let editQId          = null;
+let G                = {};
+let cdTimer          = null;
+let cdVal            = 9;
+let sbCollapsed      = false;
+let pendingThrowIdx  = null;
 
 function resetG(){
   G = {
@@ -528,6 +553,7 @@ function newRound(){
   G.thrown     = [];
   G.changes    = [];
   G.accusedIdx = null;
+  G.rvCursor   = 0;
 
   // 抽題
   G.question = questions[Math.floor(Math.random()*questions.length)];
@@ -582,6 +608,7 @@ function revealCard(){
   const el = id => document.getElementById(id);
   el('rc-role').textContent = {thinker:'🎤 想想', honest:'📖 老實人', bluffer:'🃏 瞎掰人'}[role];
   el('rc-term').textContent = q.term;
+  el('rc-cat').textContent  = `分類：${q.category || '一般'}`;
   el('rc-def').textContent  = q.definition;
   el('rc-cd').classList.add('hidden');
   el('rc-bluff-note').classList.add('hidden');
@@ -593,17 +620,17 @@ function revealCard(){
     el('rc-thinker-note').classList.remove('hidden');
     el('rc-cd').classList.remove('hidden');
     el('rv-hide-btn').textContent = '已瞭解，遮住並傳給下一位 →';
-    startCD(6, false);
+    startCD(4, false);
   } else if(role === 'honest'){
     el('rc-cd').classList.remove('hidden');
     el('rv-hide-btn').textContent = '已記住，遮住並傳給下一位 →';
-    startCD(6, true);
+    startCD(4, true);
   } else {
     el('rc-def-sec').classList.add('hidden');
     el('rc-bluff-note').classList.remove('hidden');
     el('rc-cd').classList.remove('hidden');
     el('rv-hide-btn').textContent = '已看好，遮住並傳給下一位 →';
-    startCD(6, false);
+    startCD(4, false);
   }
 
   document.getElementById('rv-cover').classList.add('hidden');
@@ -654,9 +681,8 @@ function hideCard(){
 // ══════════════════════════════════════════════
 function goSpeak(){
   const q  = G.question;
-  const tn = G.players[G.thinkerIdx].name;
   document.getElementById('sp-term').textContent    = q.term;
-  document.getElementById('sp-thinker').textContent = tn;
+  document.getElementById('sp-cat').textContent     = q.category || '一般';
   document.getElementById('cards-left').textContent = G.cardsLeft;
 
   const list = document.getElementById('throw-list');
@@ -680,10 +706,19 @@ function goSpeak(){
 
 function throwCard(ti){
   if(G.cardsLeft <= 0) return;
+  pendingThrowIdx = ti;
+  document.getElementById('tm-target').textContent = G.players[ti].name;
+  document.getElementById('throw-modal').style.display = 'flex';
+}
+
+function confirmThrow(){
+  closeThrowModal();
+  const ti = pendingThrowIdx;
+  pendingThrowIdx = null;
+  if(ti === null) return;
+
   const tn = G.players[G.thinkerIdx].name;
   const pn = G.players[ti].name;
-  if(!confirm(`確定要向「${pn}」丟出公三小卡嗎？`)) return;
-
   const isHonest = G.roles[ti] === 'honest';
   let tDelta=0, pDelta=0, logMsg='';
 
@@ -709,6 +744,11 @@ function throwCard(ti){
 
   renderThrowLog();
   renderSB();
+}
+
+function closeThrowModal(){
+  document.getElementById('throw-modal').style.display = 'none';
+  pendingThrowIdx = null;
 }
 
 function renderThrowLog(){
