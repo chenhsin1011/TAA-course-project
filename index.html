@@ -415,8 +415,6 @@ let G                = {};
 let cdTimer          = null;
 let cdVal            = 9;
 let sbCollapsed      = false;
-let pendingThrowIdx  = null;
-
 function resetG(){
   G = {
     players:[],      // [{name,score}]
@@ -428,6 +426,7 @@ function resetG(){
     roles:[],        // 'thinker' | 'honest' | 'bluffer'
     question:null,
     rvCursor:0,
+    revealOrder:[],  // player indices to show card to (excludes thinker)
     cardsLeft:0,
     thrown:[],       // [{targetIdx, isHonest}]
     changes:[],      // score-change log objects
@@ -561,14 +560,18 @@ function newRound(){
 // 身分牌
 // ══════════════════════════════════════════════
 function goRoleReveal(){
+  // 想想身分已公開宣告，無需再傳閱手機
+  G.revealOrder = G.players.map((_,i)=>i).filter(i => G.roles[i] !== 'thinker');
   G.rvCursor = 0;
+  if(G.revealOrder.length === 0){ goSpeak(); return; }
   showNextReveal();
   showS('s-roles');
 }
 
 function showNextReveal(){
-  const p   = G.players[G.rvCursor];
-  const tot = G.players.length;
+  const playerIdx = G.revealOrder[G.rvCursor];
+  const p   = G.players[playerIdx];
+  const tot = G.revealOrder.length;
   document.getElementById('rv-prog').textContent  = `${G.rvCursor+1} / ${tot}`;
   document.getElementById('rv-pname').textContent = `請把手機傳給 ${p.name}`;
   document.getElementById('rv-cover').classList.remove('hidden');
@@ -577,7 +580,8 @@ function showNextReveal(){
 
 function revealCard(){
   stopCD();
-  const role = G.roles[G.rvCursor];
+  const playerIdx = G.revealOrder[G.rvCursor];
+  const role = G.roles[playerIdx];
   const q    = G.question;
   const card = document.getElementById('rc-card');
   card.className = 'rc ' + role;
@@ -646,7 +650,7 @@ function stopCD(){
 function hideCard(){
   stopCD();
   G.rvCursor++;
-  if(G.rvCursor >= G.players.length){
+  if(G.rvCursor >= G.revealOrder.length){
     goSpeak();
   } else {
     showNextReveal();
@@ -683,17 +687,35 @@ function goSpeak(){
 
 function throwCard(ti){
   if(G.cardsLeft <= 0) return;
-  pendingThrowIdx = ti;
-  document.getElementById('tm-target').textContent = G.players[ti].name;
-  document.getElementById('throw-modal').style.display = 'flex';
+  const row = document.getElementById(`tr-${ti}`);
+  if(!row) return;
+  const pn = esc(G.players[ti].name);
+  // 展開行內確認，取代原本的按鈕列
+  row.style.cssText = 'flex-direction:column;align-items:flex-start;gap:8px;padding:12px 15px';
+  row.innerHTML = `
+    <div style="font-size:.95rem">確定向 <strong style="color:#fbbf24">${pn}</strong> 丟出公三小卡？</div>
+    <div style="font-size:.8rem;line-height:1.8">
+      <span style="color:#22c55e">✓ 命中瞎掰人：想想 +1，對方 −1</span><br>
+      <span style="color:#ef4444">⚠ 命中老實人：想想 −3</span>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-sec btn-sm" onclick="cancelThrow(${ti})">取消</button>
+      <button class="btn btn-org btn-sm" onclick="doThrow(${ti})">確定丟出 🃏</button>
+    </div>`;
 }
 
-function confirmThrow(){
-  const ti = pendingThrowIdx;   // 先讀值，再關 modal
-  pendingThrowIdx = null;
-  closeThrowModal();
-  if(ti === null) return;
+function cancelThrow(ti){
+  const row = document.getElementById(`tr-${ti}`);
+  if(!row) return;
+  row.style.cssText = '';
+  row.className = 'pt-row';
+  row.innerHTML = `
+    <span>${esc(G.players[ti].name)}</span>
+    <button class="tb" onclick="throwCard(${ti})"
+      ${G.cardsLeft<=0?'disabled':''}>🃏 丟卡</button>`;
+}
 
+function doThrow(ti){
   const tn = G.players[G.thinkerIdx].name;
   const pn = G.players[ti].name;
   const isHonest = G.roles[ti] === 'honest';
@@ -715,17 +737,16 @@ function confirmThrow(){
 
   document.getElementById('cards-left').textContent = G.cardsLeft;
   const row = document.getElementById(`tr-${ti}`);
-  if(row){ row.classList.add('thrown'); row.querySelector('.tb').disabled=true; }
+  if(row){
+    row.style.cssText = '';
+    row.className = 'pt-row thrown';
+    row.innerHTML = `<span>${esc(pn)}</span><span class="dim" style="font-size:.82rem">✓ 已丟出</span>`;
+  }
   if(G.cardsLeft <= 0)
     document.querySelectorAll('.tb').forEach(b=>b.disabled=true);
 
   renderThrowLog();
   renderSB();
-}
-
-function closeThrowModal(){
-  document.getElementById('throw-modal').style.display = 'none';
-  pendingThrowIdx = null;
 }
 
 function renderThrowLog(){
@@ -1028,33 +1049,6 @@ function diffBadge(d){
 function id(s){ return document.getElementById(s); }
 </script>
 
-<!-- 丟卡確認視窗：放在 body 最外層，避免任何父層 CSS 干擾 fixed 定位 -->
-<div id="throw-modal"
-     style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;
-            background:rgba(0,0,0,.72);z-index:9999;
-            align-items:center;justify-content:center;padding:16px;box-sizing:border-box">
-  <div style="background:#1a1a2e;border:1px solid #2d2d5e;border-radius:12px;
-              padding:24px;max-width:340px;width:100%;box-sizing:border-box">
-    <h3 style="margin-bottom:12px;color:#e8e8f4">確認丟卡</h3>
-    <p style="margin-bottom:12px;color:#e8e8f4;line-height:1.6">
-      確定要向 <strong id="tm-target" style="color:#fbbf24"></strong> 丟出公三小卡嗎？
-    </p>
-    <div style="background:#16213e;border-radius:8px;padding:12px;margin-bottom:18px;
-                font-size:.88rem;line-height:1.8">
-      <div style="color:#22c55e">✓ 命中瞎掰人：想想 +1 分，對方 −1 分</div>
-      <div style="color:#ef4444">⚠ 命中老實人：想想 −3 分</div>
-    </div>
-    <div style="display:flex;gap:10px">
-      <button onclick="closeThrowModal()"
-              style="flex:1;padding:11px;background:#16213e;color:#e8e8f4;border:1px solid #2d2d5e;
-                     border-radius:8px;font-size:1rem;cursor:pointer;font-family:inherit">取消</button>
-      <button onclick="confirmThrow()"
-              style="flex:1;padding:11px;background:#f97316;color:#fff;border:none;
-                     border-radius:8px;font-size:1rem;font-weight:bold;cursor:pointer;font-family:inherit">
-        確定丟出 🃏
-      </button>
-    </div>
-  </div>
-</div>
+
 </body>
 </html>
