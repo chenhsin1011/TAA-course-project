@@ -343,29 +343,6 @@ hr.div{border:none;border-top:1px solid var(--bdr);margin:12px 0}
     <button class="btn btn-org btn-full mt16" onclick="resetGame()">再來一局</button>
   </div>
 
-  <!-- 丟卡確認視窗（自訂 modal，取代原生 confirm）-->
-  <div id="throw-modal"
-    style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.72);
-           z-index:1000;align-items:center;justify-content:center;padding:16px">
-    <div style="background:var(--sur);border:1px solid var(--bdr);border-radius:var(--r);
-                padding:24px;max-width:340px;width:100%">
-      <h3 class="mb12">確認丟卡</h3>
-      <p class="mb12">確定要向
-        <strong id="tm-target" class="gld"></strong>
-        丟出公三小卡嗎？
-      </p>
-      <div style="background:var(--sur2);border-radius:8px;padding:12px;margin-bottom:18px;
-                  font-size:.88rem;line-height:1.8">
-        <div class="grn">✓ 命中瞎掰人：想想 +1 分，對方 −1 分</div>
-        <div class="red">⚠ 命中老實人：想想 −3 分</div>
-      </div>
-      <div style="display:flex;gap:10px">
-        <button class="btn btn-sec" style="flex:1" onclick="closeThrowModal()">取消</button>
-        <button class="btn btn-org" style="flex:1" onclick="confirmThrow()">確定丟出 🃏</button>
-      </div>
-    </div>
-  </div>
-
 </div><!-- /tab-game -->
 
 <!-- ══════════════ 題庫管理區 ══════════════ -->
@@ -712,9 +689,9 @@ function throwCard(ti){
 }
 
 function confirmThrow(){
-  closeThrowModal();
-  const ti = pendingThrowIdx;
+  const ti = pendingThrowIdx;   // 先讀值，再關 modal
   pendingThrowIdx = null;
+  closeThrowModal();
   if(ti === null) return;
 
   const tn = G.players[G.thinkerIdx].name;
@@ -1050,5 +1027,34 @@ function diffBadge(d){
 
 function id(s){ return document.getElementById(s); }
 </script>
+
+<!-- 丟卡確認視窗：放在 body 最外層，避免任何父層 CSS 干擾 fixed 定位 -->
+<div id="throw-modal"
+     style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;
+            background:rgba(0,0,0,.72);z-index:9999;
+            align-items:center;justify-content:center;padding:16px;box-sizing:border-box">
+  <div style="background:#1a1a2e;border:1px solid #2d2d5e;border-radius:12px;
+              padding:24px;max-width:340px;width:100%;box-sizing:border-box">
+    <h3 style="margin-bottom:12px;color:#e8e8f4">確認丟卡</h3>
+    <p style="margin-bottom:12px;color:#e8e8f4;line-height:1.6">
+      確定要向 <strong id="tm-target" style="color:#fbbf24"></strong> 丟出公三小卡嗎？
+    </p>
+    <div style="background:#16213e;border-radius:8px;padding:12px;margin-bottom:18px;
+                font-size:.88rem;line-height:1.8">
+      <div style="color:#22c55e">✓ 命中瞎掰人：想想 +1 分，對方 −1 分</div>
+      <div style="color:#ef4444">⚠ 命中老實人：想想 −3 分</div>
+    </div>
+    <div style="display:flex;gap:10px">
+      <button onclick="closeThrowModal()"
+              style="flex:1;padding:11px;background:#16213e;color:#e8e8f4;border:1px solid #2d2d5e;
+                     border-radius:8px;font-size:1rem;cursor:pointer;font-family:inherit">取消</button>
+      <button onclick="confirmThrow()"
+              style="flex:1;padding:11px;background:#f97316;color:#fff;border:none;
+                     border-radius:8px;font-size:1rem;font-weight:bold;cursor:pointer;font-family:inherit">
+        確定丟出 🃏
+      </button>
+    </div>
+  </div>
+</div>
 </body>
 </html>
