@@ -157,6 +157,29 @@ hr.div{border:none;border-top:1px solid var(--bdr);margin:12px 0}
 /* ─── 記錄條 ─── */
 .log-i{font-size:.82rem;padding:4px 0;border-bottom:1px solid var(--bdr);color:var(--dim)}
 .log-i:last-child{border-bottom:none}
+
+/* ─── 規則畫面 ─── */
+.rule-section{margin-bottom:18px}
+.rule-section h3{font-size:1rem;margin-bottom:10px;color:var(--org)}
+.role-card{display:flex;align-items:flex-start;gap:12px;padding:12px 14px;border-radius:10px;margin-bottom:8px}
+.role-card.rc-thinker{background:rgba(249,115,22,.1);border:1px solid rgba(249,115,22,.35)}
+.role-card.rc-honest{background:rgba(59,130,246,.1);border:1px solid rgba(59,130,246,.35)}
+.role-card.rc-bluffer{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.35)}
+.role-icon{font-size:1.8rem;line-height:1;flex-shrink:0}
+.role-name{font-weight:bold;font-size:1rem;margin-bottom:4px}
+.role-desc{font-size:.85rem;color:#ccc;line-height:1.55}
+.step-list{list-style:none;padding:0;counter-reset:steps}
+.step-list li{counter-increment:steps;display:flex;align-items:flex-start;gap:10px;
+  padding:9px 0;border-bottom:1px solid var(--bdr);font-size:.9rem;line-height:1.5}
+.step-list li:last-child{border-bottom:none}
+.step-list li::before{content:counter(steps);min-width:22px;height:22px;background:var(--org);
+  color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:.78rem;font-weight:bold;flex-shrink:0;margin-top:1px}
+.score-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.score-item{padding:9px 12px;border-radius:8px;font-size:.85rem;line-height:1.55}
+.score-item.ok{background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.3)}
+.score-item.fail{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3)}
+.score-label{font-weight:bold;margin-bottom:3px}
 </style>
 </head>
 <body>
@@ -178,8 +201,93 @@ hr.div{border:none;border-top:1px solid var(--bdr);margin:12px 0}
     <div id="sb-body"><div id="sb-list"></div></div>
   </div>
 
+  <!-- 畫面：遊戲規則 -->
+  <div id="s-rules" class="screen active">
+    <h1 class="mb12">🃏 瞎掰王</h1>
+    <p class="dim tc mb20" style="font-size:.88rem">仿 9Upper 規則的中文猜詞派對遊戲</p>
+
+    <div class="card rule-section">
+      <h3>🎯 遊戲目標</h3>
+      <p style="font-size:.9rem;line-height:1.65;color:#ccc">
+        每輪公布一個詞彙，玩家各自扮演不同身分，透過發言迷惑對手。<br>
+        最終分數最高的玩家獲勝！
+      </p>
+    </div>
+
+    <div class="card rule-section">
+      <h3>👥 三種身分</h3>
+      <div class="role-card rc-thinker">
+        <div class="role-icon">🎤</div>
+        <div>
+          <div class="role-name" style="color:var(--org)">想想（身分公開）</div>
+          <div class="role-desc">不知道正確解釋，但知道本輪詞彙。負責聆聽所有人的說法，猜出誰是老實人。</div>
+        </div>
+      </div>
+      <div class="role-card rc-honest">
+        <div class="role-icon">📖</div>
+        <div>
+          <div class="role-name" style="color:var(--blu)">老實人（秘密）</div>
+          <div class="role-desc">知道詞彙的正確解釋。說真話，但要讓想想以為自己在瞎掰！</div>
+        </div>
+      </div>
+      <div class="role-card rc-bluffer">
+        <div class="role-icon">🃏</div>
+        <div>
+          <div class="role-name" style="color:var(--red)">瞎掰人（秘密）</div>
+          <div class="role-desc">只知道詞彙，不知道正確解釋。自行編造一個聽起來合理的說法，騙過想想！</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card rule-section">
+      <h3>⚙️ 一輪流程</h3>
+      <ol class="step-list">
+        <li>公布本輪詞彙，並宣告誰是「想想」</li>
+        <li>其他玩家依序私下查看自己的身分牌（含詞彙解釋）</li>
+        <li>所有人輪流發言，說出對這個詞的解釋</li>
+        <li>想想可使用「公三小卡」，丟給覺得是瞎掰人的玩家</li>
+        <li>想想指控誰是老實人，揭曉結果並計分</li>
+      </ol>
+    </div>
+
+    <div class="card rule-section">
+      <h3>🃏 公三小卡規則</h3>
+      <p class="hint mb12">每輪卡數 = 玩家人數 − 2，可在發言階段使用</p>
+      <div class="score-grid">
+        <div class="score-item ok">
+          <div class="score-label" style="color:var(--grn)">✓ 丟中瞎掰人</div>
+          想想 <strong>+1</strong>，被丟者 <strong>−1</strong>
+        </div>
+        <div class="score-item fail">
+          <div class="score-label" style="color:var(--red)">⚠ 丟中老實人</div>
+          想想 <strong>−3</strong>（謹慎使用！）
+        </div>
+      </div>
+    </div>
+
+    <div class="card rule-section">
+      <h3>🏆 指控計分</h3>
+      <div class="score-grid">
+        <div class="score-item ok">
+          <div class="score-label" style="color:var(--grn)">✓ 猜對老實人</div>
+          想想獲得題目難度分
+        </div>
+        <div class="score-item fail">
+          <div class="score-label" style="color:var(--red)">✗ 猜錯</div>
+          所有瞎掰人各得題目難度分
+        </div>
+      </div>
+      <p class="hint mt12">難度分：簡單 +1 ｜ 普通 +2 ｜ 困難 +3</p>
+      <p class="hint mt4">每位玩家初始分數：<strong class="gld">3 分</strong></p>
+    </div>
+
+    <button class="btn btn-org btn-full mt8" style="font-size:1.1rem;padding:14px" onclick="goSetup()">
+      了解規則，開始設定 →
+    </button>
+  </div>
+
   <!-- 畫面：設定 -->
-  <div id="s-setup" class="screen active">
+  <div id="s-setup" class="screen">
     <h1 class="mb12">🃏 瞎掰王</h1>
     <p class="dim tc mb12" style="font-size:.88rem">仿 9Upper 規則的中文猜詞桌遊</p>
 
@@ -456,6 +564,13 @@ function switchTab(t){
   document.getElementById('nav-game').classList.toggle('active', t==='game');
   document.getElementById('nav-q').classList.toggle('active', t==='q');
   if(t==='q') renderQList();
+}
+
+// ══════════════════════════════════════════════
+// 規則畫面
+// ══════════════════════════════════════════════
+function goSetup(){
+  showS('s-setup');
 }
 
 // ══════════════════════════════════════════════
