@@ -215,144 +215,146 @@
       "definition": "由政府、企業、研究機構與公民共同構成的資料生產、流通與應用網絡，各方透過資料互動創造價值",
       "difficulty": 3,
       "category": "資料治理"
- },
-{
-"id": 31,
-"term": "演算法透明度",
-"definition": "要求政府或企業使用的演算法決策系統能夠揭露運作邏輯、資料來源與判斷依據，以提升公眾信任與問責性",
-"difficulty": 1,
-"category": "AI治理"
-},
-{
-"id": 32,
-"term": "數位身分",
-"definition": "個人在網路環境中的可驗證身份資訊集合，可用於登入、認證及存取數位服務",
-"difficulty": 1,
-"category": "數位治理"
-},
-{
-"id": 33,
-"term": "電子簽章",
-"definition": "利用數位技術確認文件簽署者身分及內容完整性的電子認證方式",
-"difficulty": 1,
-"category": "數位治理"
-},
-{
-"id": 34,
-"term": "雲端運算",
-"definition": "透過網際網路提供運算資源、儲存空間與軟體服務的資訊技術模式",
-"difficulty": 1,
-"category": "科技基礎建設"
-},
-{
-"id": 35,
-"term": "資訊安全",
-"definition": "保護資訊系統與資料免於未授權存取、竄改、洩漏或破壞的管理與技術措施",
-"difficulty": 1,
-"category": "資安治理"
-},
-{
-"id": 36,
-"term": "數位孿生",
-"definition": "利用即時資料建立實體設備、城市或系統的虛擬模型，以進行模擬與管理",
-"difficulty": 2,
-"category": "智慧治理"
-},
-{
-"id": 37,
-"term": "演算法偏誤",
-"definition": "人工智慧系統因訓練資料或設計缺陷而產生不公平或歧視性結果的現象",
-"difficulty": 2,
-"category": "AI治理"
-},
-{
-"id": 38,
-"term": "跨域資料整合",
-"definition": "將不同機關或組織的資料進行串接與分析，以提升決策品質與行政效率",
-"difficulty": 2,
-"category": "資料治理"
-},
-{
-"id": 39,
-"term": "數位韌性",
-"definition": "組織在遭遇資安攻擊、系統故障或災害時維持關鍵服務運作並快速復原的能力",
-"difficulty": 2,
-"category": "資安治理"
-},
-{
-"id": 40,
-"term": "公民科技",
-"definition": "由民間社群利用科技工具促進公共參與、政府透明與社會創新的實踐模式",
-"difficulty": 2,
-"category": "數位治理"
-},
-{
-"id": 41,
-"term": "生成式人工智慧",
-"definition": "能夠依據指令自動產生文字、圖片、程式碼或影音內容的人工智慧技術",
-"difficulty": 2,
-"category": "AI治理"
-},
-{
-"id": 42,
-"term": "資料共享協議",
-"definition": "規範不同組織之間資料交換範圍、權責與安全要求的制度安排",
-"difficulty": 2,
-"category": "資料治理"
-},
-{
-"id": 43,
-"term": "智慧城市",
-"definition": "運用物聯網、大數據與人工智慧提升都市治理效率與居民生活品質的城市發展模式",
-"difficulty": 2,
-"category": "智慧治理"
-},
-{
-"id": 44,
-"term": "數位憑證",
-"definition": "由可信任機構核發，用以驗證個人、設備或網站身分的電子證明文件",
-"difficulty": 2,
-"category": "資安治理"
-},
-{
-"id": 45,
-"term": "開放原始碼",
-"definition": "允許任何人檢視、修改與再散布程式碼的軟體開發模式",
-"difficulty": 2,
-"category": "科技政策"
-},
-{
-"id": 46,
-"term": "資料信託",
-"definition": "由第三方機構代表資料提供者管理與運用資料，以兼顧隱私與公共利益的制度設計",
-"difficulty": 3,
-"category": "資料治理"
-},
-{
-"id": 47,
-"term": "演算法問責",
-"definition": "要求開發者或使用機構對演算法造成的決策結果與社會影響負起責任的治理原則",
-"difficulty": 3,
-"category": "AI治理"
-},
-{
-"id": 48,
-"term": "數位公共財",
-"definition": "可供社會大眾共享使用且不易排除他人使用的數位資源或基礎設施",
-"difficulty": 3,
-"category": "數位治理"
-},
-{
-"id": 49,
-"term": "資安攻擊面",
-"definition": "資訊系統中所有可能遭受駭客利用或入侵的弱點與入口總和",
-"difficulty": 3,
-"category": "資安治理"
-},
-{
-"id": 50,
-"term": "可信任人工智慧",
-"definition": "兼顧公平性、透明性、安全性與隱私保護，使人工智慧能被社會信任並安全應用的發展原則",
-"difficulty": 3,
-"category": "AI治理"
+     },
+    {
+    "id": 31,
+    "term": "演算法透明度",
+    "definition": "要求政府或企業使用的演算法決策系統能夠揭露運作邏輯、資料來源與判斷依據，以提升公眾信任與問責性",
+    "difficulty": 1,
+    "category": "AI治理"
+    },
+    {
+    "id": 32,
+    "term": "數位身分",
+    "definition": "個人在網路環境中的可驗證身份資訊集合，可用於登入、認證及存取數位服務",
+    "difficulty": 1,
+    "category": "數位治理"
+    },
+    {
+    "id": 33,
+    "term": "電子簽章",
+    "definition": "利用數位技術確認文件簽署者身分及內容完整性的電子認證方式",
+    "difficulty": 1,
+    "category": "數位治理"
+    },
+    {
+    "id": 34,
+    "term": "雲端運算",
+    "definition": "透過網際網路提供運算資源、儲存空間與軟體服務的資訊技術模式",
+    "difficulty": 1,
+    "category": "科技基礎建設"
+    },
+    {
+    "id": 35,
+    "term": "資訊安全",
+    "definition": "保護資訊系統與資料免於未授權存取、竄改、洩漏或破壞的管理與技術措施",
+    "difficulty": 1,
+    "category": "資安治理"
+    },
+    {
+    "id": 36,
+    "term": "數位孿生",
+    "definition": "利用即時資料建立實體設備、城市或系統的虛擬模型，以進行模擬與管理",
+    "difficulty": 2,
+    "category": "智慧治理"
+    },
+    {
+    "id": 37,
+    "term": "演算法偏誤",
+    "definition": "人工智慧系統因訓練資料或設計缺陷而產生不公平或歧視性結果的現象",
+    "difficulty": 2,
+    "category": "AI治理"
+    },
+    {
+    "id": 38,
+    "term": "跨域資料整合",
+    "definition": "將不同機關或組織的資料進行串接與分析，以提升決策品質與行政效率",
+    "difficulty": 2,
+    "category": "資料治理"
+    },
+    {
+    "id": 39,
+    "term": "數位韌性",
+    "definition": "組織在遭遇資安攻擊、系統故障或災害時維持關鍵服務運作並快速復原的能力",
+    "difficulty": 2,
+    "category": "資安治理"
+    },
+    {
+    "id": 40,
+    "term": "公民科技",
+    "definition": "由民間社群利用科技工具促進公共參與、政府透明與社會創新的實踐模式",
+    "difficulty": 2,
+    "category": "數位治理"
+    },
+    {
+    "id": 41,
+    "term": "生成式人工智慧",
+    "definition": "能夠依據指令自動產生文字、圖片、程式碼或影音內容的人工智慧技術",
+    "difficulty": 2,
+    "category": "AI治理"
+    },
+    {
+    "id": 42,
+    "term": "資料共享協議",
+    "definition": "規範不同組織之間資料交換範圍、權責與安全要求的制度安排",
+    "difficulty": 2,
+    "category": "資料治理"
+    },
+    {
+    "id": 43,
+    "term": "智慧城市",
+    "definition": "運用物聯網、大數據與人工智慧提升都市治理效率與居民生活品質的城市發展模式",
+    "difficulty": 2,
+    "category": "智慧治理"
+    },
+    {
+    "id": 44,
+    "term": "數位憑證",
+    "definition": "由可信任機構核發，用以驗證個人、設備或網站身分的電子證明文件",
+    "difficulty": 2,
+    "category": "資安治理"
+    },
+    {
+    "id": 45,
+    "term": "開放原始碼",
+    "definition": "允許任何人檢視、修改與再散布程式碼的軟體開發模式",
+    "difficulty": 2,
+    "category": "科技政策"
+    },
+    {
+    "id": 46,
+    "term": "資料信託",
+    "definition": "由第三方機構代表資料提供者管理與運用資料，以兼顧隱私與公共利益的制度設計",
+    "difficulty": 3,
+    "category": "資料治理"
+    },
+    {
+    "id": 47,
+    "term": "演算法問責",
+    "definition": "要求開發者或使用機構對演算法造成的決策結果與社會影響負起責任的治理原則",
+    "difficulty": 3,
+    "category": "AI治理"
+    },
+    {
+    "id": 48,
+    "term": "數位公共財",
+    "definition": "可供社會大眾共享使用且不易排除他人使用的數位資源或基礎設施",
+    "difficulty": 3,
+    "category": "數位治理"
+    },
+    {
+    "id": 49,
+    "term": "資安攻擊面",
+    "definition": "資訊系統中所有可能遭受駭客利用或入侵的弱點與入口總和",
+    "difficulty": 3,
+    "category": "資安治理"
+    },
+    {
+    "id": 50,
+    "term": "可信任人工智慧",
+    "definition": "兼顧公平性、透明性、安全性與隱私保護，使人工智慧能被社會信任並安全應用的發展原則",
+    "difficulty": 3,
+    "category": "AI治理"
+    }
+  ]
 }
