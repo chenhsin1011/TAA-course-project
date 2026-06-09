@@ -711,17 +711,17 @@ function revealCard(){
     el('rc-thinker-note').classList.remove('hidden');
     el('rc-cd').classList.remove('hidden');
     el('rv-hide-btn').textContent = '已瞭解，遮住並傳給下一位 →';
-    startCD(4, false);
+    startCD(10, false);
   } else if(role === 'honest'){
     el('rc-cd').classList.remove('hidden');
     el('rv-hide-btn').textContent = '已記住，遮住並傳給下一位 →';
-    startCD(4, true);
+    startCD(10, true);
   } else {
     el('rc-def-sec').classList.add('hidden');
     el('rc-bluff-note').classList.remove('hidden');
     el('rc-cd').classList.remove('hidden');
     el('rv-hide-btn').textContent = '已看好，遮住並傳給下一位 →';
-    startCD(4, false);
+    startCD(10, false);
   }
 
   document.getElementById('rv-cover').classList.add('hidden');
